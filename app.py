@@ -31,14 +31,14 @@ def create_event():
     # TODO: Task 2 - Design and Develop the Code
     global next_id
 
-    if request.is_json:
+    if not request.is_json:
         abort(400, description="The data must be in json")
 
     data = request.get_json()
     if title not in data:
         abort(400, description="The Event must have a title")
     
-    new_event = Event(next_id, "FreeCode Camp")
+    new_event = Event(id=next_id, title=data["title"])
     events.append(new_event)
     next_id += 1
 
