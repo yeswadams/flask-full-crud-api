@@ -1,4 +1,7 @@
-from flask import Flask, jsonify, request
+import sys
+sys.path.append(r'C:\Users\yeswa\OneDrive\Documents\code\04. moringa\01. compulsory_lab\flask-full-crud-api\venv\Lib\site-packages')
+
+from flask import Flask, request, jsonify, abort
 
 app = Flask(__name__)
 
@@ -17,11 +20,30 @@ events = [
     Event(2, "Python Workshop")
 ]
 
+@app.route("/")
+def home_page():
+    return "<h1>This is the Home Page</h1>"
+
 # TODO: Task 1 - Define the Problem
 # Create a new event from JSON input
 @app.route("/events", methods=["POST"])
 def create_event():
     # TODO: Task 2 - Design and Develop the Code
+    global next_id
+
+    if request.is_json:
+        abort(400, description="The data must be in json")
+
+    data = request.get_json()
+    if title not in data:
+        abort(400, description="The Event must have a title")
+    
+    new_event = Event(next_id, "FreeCode Camp")
+    events.append(new_event)
+    next_id += 1
+
+    return jsonify(new_event.to_dict()), 201
+    
 
     # TODO: Task 3 - Implement the Loop and Process Each Element
 
@@ -51,4 +73,4 @@ def delete_event(event_id):
     pass
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5555)
