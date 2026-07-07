@@ -46,11 +46,9 @@ def create_event():
 
     return jsonify(new_event.to_dict()), 201
 
-# TODO: Task 1 - Define the Problem
-# Update the title of an existing event
+
 @app.route("/events/<int:event_id>", methods=["PATCH"])
 def update_event(event_id):
-    
     event = find_event_by_Id(event_id)
     if event is None:
         abort(404, description="Event not found")
@@ -66,16 +64,22 @@ def update_event(event_id):
 
     return jsonify(event.to_dict()), 200
 
-# TODO: Task 1 - Define the Problem
-# Remove an event from the list
 @app.route("/events/<int:event_id>", methods=["DELETE"])
 def delete_event(event_id):
-    # TODO: Task 2 - Design and Develop the Code
+    global events
+    event = find_event_by_Id(event_id)
 
-    # TODO: Task 3 - Implement the Loop and Process Each Element
+    if event is None:
+        abort(404, description="Event Not Found")
 
-    # TODO: Task 4 - Return and Handle Results
-    pass
+    # List comprehension
+    events = [e for e in events if e.id != event_id]
+
+    return jsonify({"message": f"Event of id:{event_id} successfully deleted"}), 204
+
+
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5555)
