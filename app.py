@@ -19,23 +19,25 @@ events = [
     Event(1, "Tech Meetup"),
     Event(2, "Python Workshop")
 ]
+next_id=3
+
+def find_event_by_Id(event_id):
+    return next((e for e in events if e.id == event_id), None)
 
 @app.route("/")
 def home_page():
-    return "<h1>This is the Home Page</h1>"
+    return "<h1>This is the Base Route</h1>"
 
-# TODO: Task 1 - Define the Problem
 # Create a new event from JSON input
 @app.route("/events", methods=["POST"])
 def create_event():
-    # TODO: Task 2 - Design and Develop the Code
     global next_id
 
     if not request.is_json:
         abort(400, description="The data must be in json")
 
     data = request.get_json()
-    if title not in data:
+    if "title" not in data:
         abort(400, description="The Event must have a title")
     
     new_event = Event(id=next_id, title=data["title"])
@@ -43,23 +45,26 @@ def create_event():
     next_id += 1
 
     return jsonify(new_event.to_dict()), 201
-    
-
-    # TODO: Task 3 - Implement the Loop and Process Each Element
-
-    # TODO: Task 4 - Return and Handle Results
-    pass
 
 # TODO: Task 1 - Define the Problem
 # Update the title of an existing event
 @app.route("/events/<int:event_id>", methods=["PATCH"])
 def update_event(event_id):
-    # TODO: Task 2 - Design and Develop the Code
+    
+    event = find_event_by_Id(event_id)
+    if event is None:
+        abort(404, description="Event not found")
 
-    # TODO: Task 3 - Implement the Loop and Process Each Element
+    if not request.is_json:
+        abort (400, description="The data must be in json")
 
-    # TODO: Task 4 - Return and Handle Results
-    pass
+    data = request.get_json()
+    if "title" not in data:
+        abort(400, description="The Event must have a title")
+
+    event.title = data["title"]
+
+    return jsonify(event.to_dict()), 200
 
 # TODO: Task 1 - Define the Problem
 # Remove an event from the list
